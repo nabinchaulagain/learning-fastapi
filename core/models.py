@@ -8,7 +8,7 @@ from animal.choices import PhylumChoices
 BaseModel = declarative_base()
 
 
-class AuditedModel(BaseModel):  # type: ignore
+class TimestampedModel(BaseModel):  # type: ignore
     __abstract__ = True
 
     created_at = Column(DateTime, default=func.now())
@@ -16,7 +16,7 @@ class AuditedModel(BaseModel):  # type: ignore
     deleted_at = Column(DateTime)
 
 
-class Animal(AuditedModel):
+class Animal(TimestampedModel):
     __tablename__ = "animal"
 
     id = Column("id", BigInteger, primary_key=True)

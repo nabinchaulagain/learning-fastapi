@@ -2,11 +2,13 @@ from fastapi import FastAPI
 
 from animal.views import router as animal_router
 from core import constants
+from core.exception_handlers import register_exception_handlers
 
 
 class App:
     def __init__(self):
         self.server = FastAPI()
+        register_exception_handlers(self.server)
         self.include_routers()
 
     def get_routers(self):

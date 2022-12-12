@@ -4,8 +4,12 @@ from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.session import Session
 
-from animal.constants import ANIMAL_NOT_FOUND_MESSAGE
+from animal import constants
 from animal.schemas import AnimalPayloadSchema
+from core.exceptions import (
+    NotFoundException,
+    UniqueConstraintViolationException,
+)
 from core.models import Animal
 
 
@@ -29,10 +33,7 @@ class AnimalService:
         try:
             session.commit()
         except IntegrityError:
-            raise HTTPException(
-                detail="An animal with the same name already exists",
-                status_code=400,
-            )
+            raise_name_not_unique_exception()
 
         session.refresh(animal)
 
@@ -104,13 +105,12 @@ class AnimalService:
 
 
 def raise_not_found_exception():
-    raise HTTPException(status_code=404, detail=ANIMAL_NOT_FOUND_MESSAGE)
+    raise NotFoundException(constants.ANIMAL_NOT_FOUND_MESSAGE)
 
 
 def raise_name_not_unique_exception():
-    raise HTTPException(
-        detail="An animal with the same name already exists",
-        status_code=400,
+    raise UniqueConstraintViolationException(
+        constants.ANIMAL_NAME_NOT_UNIQUE_MESSAGE
     )
 
 
